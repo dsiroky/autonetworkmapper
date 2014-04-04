@@ -109,12 +109,12 @@ def checksum(source_string):
     count_to = (len(source_string) / 2) * 2
     count = 0
     while count < count_to:
-        this_val = ord(source_string[count + 1])*256+ord(source_string[count])
+        this_val = source_string[count + 1]*256+source_string[count]
         sum = sum + this_val
         sum = sum & 0xffffffff # Necessary?
         count = count + 2
     if count_to < len(source_string):
-        sum = sum + ord(source_string[len(source_string) - 1])
+        sum = sum + source_string[len(source_string) - 1]
         sum = sum & 0xffffffff # Necessary?
     sum = (sum >> 16) + (sum & 0xffff)
     sum = sum + (sum >> 16)
@@ -129,7 +129,7 @@ def create_packet(id):
     """Create a new echo request packet based on the given "id"."""
     # Header is type (8), code (8), checksum (16), id (16), sequence (16)
     header = struct.pack('bbHHh', ICMP_ECHO_REQUEST, 0, 0, id, 1)
-    data = 192 * 'Q'
+    data = 192 * b'Q'
     # Calculate the checksum on the data and the dummy header.
     my_checksum = checksum(header + data)
     # Now that we have the right checksum, we put that in. It's just easier
